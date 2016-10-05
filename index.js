@@ -51,7 +51,7 @@
     // Returns a tip
     tip.show = function() {
       var args = Array.prototype.slice.call(arguments)
-      target = (args[args.length - 1] instanceof SVGElement) ? args.pop() : this;
+      target = (args[args.length - 1] instanceof SVGElement) ? args.pop() : null;
 
       var content = html.apply(this, args),
           poffset = offset.apply(this, args),
@@ -165,7 +165,7 @@
     // Returns root node of tip
     tip.rootElement = function(v) {
       if (!arguments.length) return rootElement
-      rootElement = v == null ? v : functor(v)
+      rootElement = v == null ? v : functor(v)()
 
       return tip
     }
@@ -264,7 +264,7 @@
     function initNode() {
       var div = d3Selection.select(document.createElement('div'))
       div
-        .style('position', 'absolute')
+        .style('position', 'fixed')
         .style('top', 0)
         .style('opacity', 0)
         .style('pointer-events', 'none')
@@ -303,7 +303,7 @@
     //
     // Returns an Object {n, s, e, w, nw, sw, ne, se}
     function getScreenBBox() {
-      var targetel   = target || d3Selection.event.target
+      var targetel   = target || (d3Selection.event || d3.event).target
 
       while (targetel.getScreenCTM == null && targetel.parentNode == null) {
         targetel = targetel.parentNode
